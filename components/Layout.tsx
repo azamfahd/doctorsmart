@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  Home, Settings, MessageSquareQuote, Menu, LogOut, Zap, Database, User
+  Home, Settings, MessageSquareQuote, Menu, LogOut, Zap, Database
 } from 'lucide-react';
 import { SystemSettings } from '../types';
 

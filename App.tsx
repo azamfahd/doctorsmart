@@ -193,9 +193,11 @@ const App: React.FC = () => {
       // الخدمة تتعامل الآن مع المفتاح الافتراضي داخلياً
       const result = await analyzeMedicalCase(patientData, settings);
       
-      let status: 'عاجلة' | 'متابعة' | 'عادية' = 'عادية';
-      if (result.diagnosis.severity === 'حرجة' || result.diagnosis.severity === 'مرتفعة') {
-        status = 'عاجلة';
+      let status: 'مستقرة' | 'متابعة' | 'تدخل طبي' | 'حرجة' = 'مستقرة';
+      if (result.diagnosis.severity === 'حرجة') {
+        status = 'حرجة';
+      } else if (result.diagnosis.severity === 'مرتفعة') {
+        status = 'تدخل طبي';
       } else if (result.diagnosis.severity === 'متوسطة') {
         status = 'متابعة';
       }
@@ -254,9 +256,7 @@ const App: React.FC = () => {
       return (
         <AIResult 
           diagnosis={currentDiagnosis.diagnosis} 
-          sources={currentDiagnosis.sources}
           patientName={lastDiagnosedPatient.name}
-          patientGender={lastDiagnosedPatient.gender}
           onClose={() => {
             setCurrentDiagnosis(null);
             setActiveTab('home');

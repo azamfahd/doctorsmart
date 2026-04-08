@@ -4,7 +4,7 @@ import {
   ChevronLeft, CheckCircle2, ChevronDown,
   Pill, ShieldCheck, 
   Activity, Zap, BarChart3, Microscope, Target, Volume2, Printer, Square, UserCog,
-  Apple, Dumbbell, LifeBuoy, HeartPulse, AlertOctagon
+  Apple, Dumbbell, LifeBuoy, HeartPulse, AlertOctagon, Image as ImageIcon, Stethoscope, FileText
 } from 'lucide-react';
 import { StructuredDiagnosis } from '../types';
 import { generateSpeech } from '../services/geminiService';
@@ -126,7 +126,7 @@ const AIResult: React.FC<AIResultProps> = ({ diagnosis, patientName, onClose }) 
           </div>
           <div className="max-w-4xl mx-auto text-center">
              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-white/10 rounded-full text-[7px] lg:text-[9px] font-black uppercase tracking-[0.2em] mb-5 lg:mb-6 backdrop-blur-md border border-white/10">
-                <ShieldCheck className="w-3 h-3 text-blue-200" /> بروتوكول التشخيص الذكي
+                <ShieldCheck className="w-3 h-3 text-blue-200" /> تحليل طبي متقدم
              </div>
              <h2 className="text-2xl lg:text-4xl font-black mb-3 lg:mb-5 tracking-tight leading-tight drop-shadow-2xl">{diagnosis.conditionName}</h2>
              <div className="flex flex-wrap justify-center items-center gap-2.5 lg:gap-6 text-[9px] lg:text-xs font-bold opacity-90">
@@ -154,13 +154,42 @@ const AIResult: React.FC<AIResultProps> = ({ diagnosis, patientName, onClose }) 
               <div>
                 <div className="flex items-center gap-2.5 lg:gap-3 mb-5 lg:mb-6">
                   <div className="p-2 lg:p-2.5 bg-blue-50 rounded-xl lg:rounded-2xl text-blue-600 shadow-sm group-hover:scale-110 transition-transform">
-                    <Zap className="w-4.5 h-4.5 lg:w-5.5 lg:h-5.5" />
+                    <FileText className="w-4.5 h-4.5 lg:w-5.5 lg:h-5.5" />
                   </div>
-                  <h3 className="font-black text-sm lg:text-base text-slate-800 uppercase tracking-widest">الملخص السريري الشامل</h3>
+                  <h3 className="font-black text-sm lg:text-base text-slate-800 uppercase tracking-widest">التحليل الطبي المفصل</h3>
                 </div>
-                <p className="text-[11px] lg:text-sm text-slate-700 leading-[1.7] font-medium">
-                  {diagnosis.summary}
-                </p>
+                <div className="space-y-4">
+                  <p className="text-[11px] lg:text-sm text-slate-700 leading-[1.8] font-medium">
+                    <strong className="text-blue-700 block mb-1">الملخص السريع:</strong>
+                    {diagnosis.summary}
+                  </p>
+                  {diagnosis.detailedAnalysis && (
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                      <strong className="text-slate-800 block mb-2 text-xs">الفسيولوجيا المرضية (Clinical Pathophysiology):</strong>
+                      <p className="text-[11px] lg:text-sm text-slate-600 leading-[1.8] font-medium">
+                        {diagnosis.detailedAnalysis}
+                      </p>
+                    </div>
+                  )}
+                  {diagnosis.labResultsAnalysis && (
+                    <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 mt-4">
+                      <strong className="text-blue-800 block mb-2 text-xs">تحليل المؤشرات الحيوية والمخبرية:</strong>
+                      <p className="text-[11px] lg:text-sm text-blue-700 leading-[1.8] font-medium">
+                        {diagnosis.labResultsAnalysis}
+                      </p>
+                    </div>
+                  )}
+                  {diagnosis.severityReasoning && (
+                    <div className={`p-4 rounded-xl border ${severityColors[diagnosis.severity]?.replace('bg-', 'bg-opacity-10 border-') || 'bg-slate-50 border-slate-100'}`}>
+                      <strong className={`block mb-1 text-xs ${severityColors[diagnosis.severity]?.replace('bg-', 'text-') || 'text-slate-800'}`}>
+                        مبررات مستوى الخطورة ({diagnosis.severity}):
+                      </strong>
+                      <p className="text-[11px] lg:text-sm text-slate-700 leading-[1.6] font-medium">
+                        {diagnosis.severityReasoning}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
               
               {diagnosis.urgentWarnings && diagnosis.urgentWarnings.length > 0 && (
@@ -178,26 +207,57 @@ const AIResult: React.FC<AIResultProps> = ({ diagnosis, patientName, onClose }) 
               )}
            </div>
 
-           <div className="bg-white rounded-xl lg:rounded-3xl p-5 lg:p-6 shadow-xl border border-slate-100 group hover:border-amber-100 transition-all duration-500">
-              <div className="flex items-center gap-2.5 lg:gap-3 mb-5 lg:mb-6">
-                <div className="p-2 lg:p-2.5 bg-amber-50 rounded-xl lg:rounded-2xl text-amber-600 shadow-sm group-hover:scale-110 transition-transform">
-                  <BarChart3 className="w-4.5 h-4.5 lg:w-5.5 lg:h-5.5" />
-                </div>
-                <h3 className="font-black text-xs lg:text-sm text-slate-800 uppercase tracking-widest">الاحتمالات البديلة</h3>
-              </div>
-              <div className="space-y-2.5 lg:space-y-3">
-                {diagnosis.differentialDiagnosis.map((item, i) => (
-                  <div key={i} className="p-3.5 lg:p-4 bg-slate-50 rounded-xl lg:rounded-2xl border border-slate-100 group/item hover:bg-white hover:border-amber-200 hover:shadow-lg transition-all duration-300">
-                    <div className="flex justify-between items-start mb-1.5">
-                      <p className="font-black text-slate-800 text-[10px] lg:text-[13px]">{item.condition}</p>
-                      <span className="text-[8px] lg:text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 lg:px-2 lg:py-0.5 rounded-lg border border-amber-100">{item.probability}%</span>
-                    </div>
-                    <p className="text-[9px] lg:text-[10px] text-slate-500 font-bold leading-relaxed">{item.reasoning}</p>
+           <div className="space-y-5 lg:space-y-6">
+             {diagnosis.specialistReferral && (
+               <div className="bg-indigo-50 rounded-xl lg:rounded-3xl p-5 lg:p-6 shadow-sm border border-indigo-100">
+                 <div className="flex items-center gap-2.5 mb-3">
+                   <div className="p-2 bg-white rounded-xl text-indigo-600 shadow-sm">
+                     <Stethoscope className="w-4.5 h-4.5" />
+                   </div>
+                   <h3 className="font-black text-xs lg:text-sm text-indigo-900 uppercase tracking-widest">التوجيه الطبي</h3>
+                 </div>
+                 <p className="text-[11px] lg:text-sm text-indigo-800 font-bold leading-relaxed">
+                   {diagnosis.specialistReferral}
+                 </p>
+               </div>
+             )}
+
+             <div className="bg-white rounded-xl lg:rounded-3xl p-5 lg:p-6 shadow-xl border border-slate-100 group hover:border-amber-100 transition-all duration-500">
+                <div className="flex items-center gap-2.5 lg:gap-3 mb-5 lg:mb-6">
+                  <div className="p-2 lg:p-2.5 bg-amber-50 rounded-xl lg:rounded-2xl text-amber-600 shadow-sm group-hover:scale-110 transition-transform">
+                    <BarChart3 className="w-4.5 h-4.5 lg:w-5.5 lg:h-5.5" />
                   </div>
-                ))}
-              </div>
+                  <h3 className="font-black text-xs lg:text-sm text-slate-800 uppercase tracking-widest">الاحتمالات البديلة</h3>
+                </div>
+                <div className="space-y-2.5 lg:space-y-3">
+                  {diagnosis.differentialDiagnosis.map((item, i) => (
+                    <div key={i} className="p-3.5 lg:p-4 bg-slate-50 rounded-xl lg:rounded-2xl border border-slate-100 group/item hover:bg-white hover:border-amber-200 hover:shadow-lg transition-all duration-300">
+                      <div className="flex justify-between items-start mb-1.5">
+                        <p className="font-black text-slate-800 text-[10px] lg:text-[13px]">{item.condition}</p>
+                        <span className="text-[8px] lg:text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 lg:px-2 lg:py-0.5 rounded-lg border border-amber-100">{item.probability}%</span>
+                      </div>
+                      <p className="text-[9px] lg:text-[10px] text-slate-500 font-bold leading-relaxed">{item.reasoning}</p>
+                    </div>
+                  ))}
+                </div>
+             </div>
            </div>
         </div>
+
+        {/* Image Findings (If any) */}
+        {diagnosis.imageFindings && (
+          <div className="bg-white rounded-xl lg:rounded-3xl p-5 lg:p-8 shadow-xl border border-purple-100">
+            <div className="flex items-center gap-2.5 lg:gap-3 mb-4">
+              <div className="p-2 lg:p-2.5 bg-purple-50 rounded-xl lg:rounded-2xl text-purple-600 shadow-sm">
+                <ImageIcon className="w-4.5 h-4.5 lg:w-5.5 lg:h-5.5" />
+              </div>
+              <h3 className="font-black text-sm lg:text-base text-slate-800 uppercase tracking-widest">تحليل الصور والتقارير المرفقة</h3>
+            </div>
+            <p className="text-[11px] lg:text-sm text-slate-700 leading-[1.8] font-medium bg-purple-50/30 p-4 rounded-xl border border-purple-50">
+              {diagnosis.imageFindings}
+            </p>
+          </div>
+        )}
 
         {/* Integrated Medical Plan Grid */}
         <h3 className="text-center text-lg font-black text-slate-800 pt-6 flex items-center justify-center gap-3">

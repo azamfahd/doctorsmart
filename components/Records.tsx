@@ -30,14 +30,14 @@ const Records: React.FC<RecordsProps> = ({ records, onStartSession, onDeleteReco
   });
 
   const getStatusConfig = (record: PatientCase) => {
-    const severity = record.diagnosis?.severity;
-    if (severity === 'حرجة' || record.status === 'عاجلة') {
+    const status = record.status;
+    if (status === 'حرجة') {
       return { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100', accent: 'bg-rose-600', icon: ShieldAlert, label: 'حالة حرجة' };
     }
-    if (severity === 'مرتفعة') {
-      return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', accent: 'bg-orange-600', icon: AlertCircle, label: 'خطورة مرتفعة' };
+    if (status === 'تدخل طبي') {
+      return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', accent: 'bg-orange-600', icon: AlertCircle, label: 'تدخل طبي' };
     }
-    if (severity === 'متوسطة' || record.status === 'متابعة') {
+    if (status === 'متابعة') {
       return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100', accent: 'bg-blue-600', icon: Clock, label: 'متابعة مستمرة' };
     }
     return { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', accent: 'bg-emerald-600', icon: CheckCircle2, label: 'حالة مستقرة' };
@@ -63,7 +63,7 @@ const Records: React.FC<RecordsProps> = ({ records, onStartSession, onDeleteReco
                    </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                   <div className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${getStatusConfig(selectedRecord).bg} ${getStatusConfig(selectedRecord).text} border ${getStatusConfig(selectedRecord).border}`}>
+                   <div className={`px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg text-[9px] lg:text-[10px] font-black uppercase tracking-widest ${getStatusConfig(selectedRecord).bg} ${getStatusConfig(selectedRecord).text} border ${getStatusConfig(selectedRecord).border}`}>
                       {getStatusConfig(selectedRecord).label}
                    </div>
                    <button onClick={() => window.print()} className="p-2.5 bg-white text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-900 hover:text-white transition-all">
@@ -214,12 +214,12 @@ const Records: React.FC<RecordsProps> = ({ records, onStartSession, onDeleteReco
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-          {['الكل', 'عاجلة', 'متابعة', 'عادية'].map((f) => (
+          {['الكل', 'حرجة', 'تدخل طبي', 'متابعة', 'مستقرة'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-6 py-3 rounded-xl text-[9px] font-black whitespace-nowrap transition-all border-2 ${
-                filter === f ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+              className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg lg:rounded-xl text-[10px] lg:text-xs font-black whitespace-nowrap transition-all border-2 ${
+                filter === f ? 'bg-slate-900 border-slate-900 text-white shadow-md' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50'
               }`}
             >
               {f}
@@ -244,7 +244,7 @@ const Records: React.FC<RecordsProps> = ({ records, onStartSession, onDeleteReco
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <h3 className="font-black text-slate-800 text-lg tracking-tight">{record.name}</h3>
-                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest ${cfg.bg} ${cfg.text}`}>
+                    <span className={`px-2.5 py-1 rounded-md text-[9px] lg:text-[10px] font-black uppercase tracking-widest ${cfg.bg} ${cfg.text}`}>
                        {cfg.label}
                     </span>
                   </div>

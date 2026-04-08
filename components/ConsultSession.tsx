@@ -173,7 +173,17 @@ const ConsultSession: React.FC<ConsultSessionProps> = ({ patient, settings, onCl
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-          systemInstruction: `أنت الآن "طبيب الاستشارة الذكي" للمريض ${patient.name}. التشخيص المفتوح: ${patient.diagnosis?.conditionName}. المؤشرات الحيوية: حرارة ${patient.vitals.temperature} وضغط ${patient.vitals.bloodPressure}. كن دقيقاً، مهنياً، ومطمئناً.`
+          systemInstruction: `أنت الآن الطبيب الاستشاري المباشر المشرف على حالة هذا المريض عبر اتصال صوتي.
+          السياق السريري:
+          الاسم: ${patient.name} | العمر: ${patient.age} | الجنس: ${patient.gender}
+          الأعراض: ${patient.symptoms}
+          التشخيص: ${patient.diagnosis?.conditionName}
+          المؤشرات الحيوية: حرارة ${patient.vitals.temperature} | ضغط ${patient.vitals.bloodPressure} | نبض ${patient.vitals.pulse} | أكسجين ${patient.vitals.spo2}
+          
+          تعليمات صارمة:
+          1. تحدث كطبيب بشري خبير في عيادته، وليس كذكاء اصطناعي.
+          2. كن دقيقاً، مهنياً، ومطمئناً في نبرة صوتك.
+          3. اربط إجاباتك دائماً بحالة المريض الحالية وتشخيصه.`
         }
       });
       sessionRef.current = await sessionPromise;

@@ -15,6 +15,17 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ doctorName, records, onNewCase, onViewAll, activeModel, isThinking }) => {
   const recentRecords = records.slice(0, 4);
 
+  const getModelDisplayName = (model: string) => {
+    switch (model) {
+      case 'gemini-3.1-pro-preview': return 'Gemini 3.1 Pro';
+      case 'gemini-3-flash-preview': return 'Gemini 3 Flash';
+      case 'gemini-3.1-flash-lite-preview': return 'Gemini 3.1 Flash Lite';
+      case 'gemini-3-pro-image-preview': return 'Gemini 3 Pro Image';
+      case 'gemini-3.1-flash-live-preview': return 'Gemini 3.1 Flash Live';
+      default: return model;
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Welcome Hero - Premium Design */}
@@ -82,7 +93,7 @@ const Dashboard: React.FC<DashboardProps> = ({ doctorName, records, onNewCase, o
             <div className="relative z-10 flex justify-between items-start">
               <div>
                 <p className="text-[7px] lg:text-[9px] font-black text-blue-400 uppercase tracking-[0.15em] mb-1 lg:mb-1.5">محرك المعالجة النشط</p>
-                <h3 className="text-lg lg:text-xl font-black mb-1 lg:mb-1.5">{activeModel.includes('pro') ? 'Gemini 1.5 Pro Elite' : 'Flash Analytics Engine'}</h3>
+                <h3 className="text-lg lg:text-xl font-black mb-1 lg:mb-1.5">{getModelDisplayName(activeModel)}</h3>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></div>
                   <span className="text-[7px] lg:text-[9px] text-slate-400 font-black uppercase tracking-widest">جاهز للتحليل الفوري</span>
@@ -111,7 +122,12 @@ const Dashboard: React.FC<DashboardProps> = ({ doctorName, records, onNewCase, o
               recentRecords.map((record) => (
                 <div key={record.id} className="flex items-center justify-between p-3 lg:p-4 bg-slate-50/50 rounded-xl lg:rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-white transition-all group cursor-pointer">
                   <div className="flex items-center gap-3 lg:gap-4">
-                    <div className={`w-9 h-9 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl flex items-center justify-center shadow-sm transition-all group-hover:scale-110 ${record.status === 'عاجلة' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'}`}>
+                    <div className={`w-9 h-9 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl flex items-center justify-center shadow-sm transition-all group-hover:scale-110 ${
+                      record.status === 'حرجة' ? 'bg-rose-100 text-rose-600' : 
+                      record.status === 'تدخل طبي' ? 'bg-orange-100 text-orange-600' : 
+                      record.status === 'متابعة' ? 'bg-blue-100 text-blue-600' : 
+                      'bg-emerald-100 text-emerald-600'
+                    }`}>
                       <Activity className="w-5 h-5 lg:w-6 lg:h-6" />
                     </div>
                     <div>
@@ -124,7 +140,12 @@ const Dashboard: React.FC<DashboardProps> = ({ doctorName, records, onNewCase, o
                     </div>
                   </div>
                   <div className="flex items-center gap-2 lg:gap-3">
-                    <span className={`text-[7px] lg:text-[8px] px-2.5 lg:px-3 py-1 rounded-full font-black uppercase tracking-widest ${record.status === 'عاجلة' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'}`}>
+                    <span className={`text-[7px] lg:text-[8px] px-2.5 lg:px-3 py-1 rounded-full font-black uppercase tracking-widest ${
+                      record.status === 'حرجة' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 
+                      record.status === 'تدخل طبي' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 
+                      record.status === 'متابعة' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 
+                      'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                    }`}>
                       {record.status}
                     </span>
                   </div>

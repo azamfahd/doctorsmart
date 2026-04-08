@@ -42,7 +42,11 @@ export interface StructuredDiagnosis {
   summary: string;
   conditionName: string;
   severity: 'منخفضة' | 'متوسطة' | 'مرتفعة' | 'حرجة';
+  severityReasoning: string;
   confidenceScore: number;
+  detailedAnalysis: string;
+  imageFindings?: string;
+  specialistReferral?: string;
   differentialDiagnosis: DifferentialDiagnosis[];
   recommendations: string[];
   suggestedTests: string[];
@@ -67,7 +71,7 @@ export interface PatientCase {
   diagnosis?: StructuredDiagnosis;
   chatHistory?: ChatMessage[];
   date: string;
-  status: 'عادية' | 'متابعة' | 'عاجلة';
+  status: 'مستقرة' | 'متابعة' | 'تدخل طبي' | 'حرجة';
 }
 
 export interface SystemSettings {
